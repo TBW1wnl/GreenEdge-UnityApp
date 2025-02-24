@@ -18,10 +18,10 @@ public class GeodesicSphereGenerator : MonoBehaviour
     {
         { TerrainType.Water, new Color(0.2f, 0.4f, 0.8f) },      // Blue
         { TerrainType.Beach, new Color(0.93f, 0.91f, 0.67f) },   // Beige
-        { TerrainType.Desert, Color.yellow },                     // Yellow
+        { TerrainType.Desert, Color.yellow },                    // Yellow
         { TerrainType.Plains, new Color(0.6f, 0.8f, 0.2f) },     // Lime
         { TerrainType.Forest, new Color(0.5f, 0.6f, 0.1f) },     // Olive
-        { TerrainType.City, Color.gray },                         // Grey
+        { TerrainType.City, Color.gray },                        // Grey
         { TerrainType.Mountain, new Color(0.5f, 0.35f, 0.2f) }   // Brown
     };
 
@@ -269,33 +269,61 @@ public class GeodesicSphereGenerator : MonoBehaviour
     {
         float offsetX = Random.Range(0f, 1000f);
         float offsetZ = Random.Range(0f, 1000f);
+        float offsetY = Random.Range(0f, 1000f); // Ajout d'un décalage pour briser la symétrie
 
         foreach (HexTile tile in hexTiles)
         {
-            float height = Mathf.PerlinNoise(
-                tile.center.x * 2f + offsetX,
-                tile.center.z * 2f + offsetZ
+            // Bruit de Perlin à fréquence plus élevée pour réduire la taille des biomes
+            float biomeNoise = Mathf.PerlinNoise(
+                tile.center.x * 0.25f + offsetX, // Augmenté de 0.1f -> 0.25f pour biomes plus petits
+                tile.center.z * 0.25f + offsetZ
             );
 
-            if (height < 0.3f)
-                tile.terrain = TerrainType.Water;
-            else if (height < 0.35f)
-                tile.terrain = TerrainType.Beach;
-            else if (height < 0.4f)
-                tile.terrain = TerrainType.Plains;
-            else if (height < 0.6f)
-                tile.terrain = TerrainType.Forest;
-            else if (height < 0.7f)
-                tile.terrain = TerrainType.Desert;
-            else
-                tile.terrain = TerrainType.Mountain;
+            // Ajout du Y pour éviter la symétrie entre les hémisphères
+            float terrainNoise = Mathf.PerlinNoise(
+                tile.center.x * 0.5f + offsetX,
+                tile.center.z * 0.5f + offsetZ + tile.center.y * 0.3f // Ajoute la hauteur pour casser la symétrie
+            );
 
-            if (Random.value < 0.05f && tile.terrain != TerrainType.Water)
+            if (biomeNoise < 0.3f)
+            {
+                tile.terrain = TerrainType.Water;
+            }
+            else if (biomeNoise < 0.4f)
+            {
+                tile.terrain = TerrainType.Beach;
+            }
+            else if (biomeNoise < 0.6f)
+            {
+                tile.terrain = (terrainNoise < 0.5f) ? TerrainType.Plains : TerrainType.Forest;
+            }
+            else if (biomeNoise < 0.8f)
+            {
+                tile.terrain = (terrainNoise < 0.5f) ? TerrainType.Desert : TerrainType.Mountain;
+            }
+            else
             {
                 tile.terrain = TerrainType.City;
             }
         }
+
+        foreach (HexTile tile in hexTiles)
+        {
+            if (tile.terrain == TerrainType.Plains || tile.terrain == TerrainType.Forest || tile.terrain == TerrainType.Desert)
+            {
+                foreach (HexTile neighbor in tile.neighbors)
+                {
+                    if (neighbor.terrain == TerrainType.Water)
+                    {
+                        tile.terrain = TerrainType.Beach;
+                        break;
+                    }
+                }
+            }
+        }
     }
+
+
 
     private void CreateInnerSphere()
     {
