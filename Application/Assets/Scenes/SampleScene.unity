@@ -321,7 +321,7 @@ MonoBehaviour:
   distance: 10
   xSpeed: 120
   ySpeed: 120
-  yMinLimit: -20
+  yMinLimit: -80
   yMaxLimit: 80
   zoomSpeed: 4
 --- !u!4 &1480136477
