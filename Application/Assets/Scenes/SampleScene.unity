@@ -269,9 +269,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dacca5f02a1bd0e4faec8ebe099ba692, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frequency: 2
+  subdivisions: 5
   radius: 5
-  randomizeTerrains: 1
 --- !u!4 &762314295
 Transform:
   m_ObjectHideFlags: 0

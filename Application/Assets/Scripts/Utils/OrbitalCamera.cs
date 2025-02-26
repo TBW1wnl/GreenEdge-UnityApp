@@ -6,7 +6,7 @@ public class OrbitalCamera : MonoBehaviour
     [SerializeField] private float distance = 50.0f;  // Distance from target
     [SerializeField] private float xSpeed = 120.0f;   // Horizontal orbit speed
     [SerializeField] private float ySpeed = 120.0f;   // Vertical orbit speed
-    [SerializeField] private float yMinLimit = -20f;  // Minimum vertical angle
+    [SerializeField] private float yMinLimit = -80f;  // Minimum vertical angle
     [SerializeField] private float yMaxLimit = 80f;   // Maximum vertical angle
     [SerializeField] private float zoomSpeed = 4.0f;  // Scrollwheel zoom speed
 
@@ -15,10 +15,25 @@ public class OrbitalCamera : MonoBehaviour
 
     void Start()
     {
+        if (target == null)
+        {
+            target = GameObject.Find("Sphere")?.transform;
+            if (target == null)
+            {
+                Debug.LogError("OrbitalCamera: Aucun target trouvé ! Assigné manuellement dans l'Inspector.");
+                return;
+            }
+        }
+
         Vector3 angles = transform.eulerAngles;
         x = angles.y;
         y = angles.x;
+
+        // Placer immédiatement la caméra dans une position correcte
+        transform.position = target.position + new Vector3(0, 0, -distance);
+        transform.LookAt(target.position);
     }
+
 
     void LateUpdate()
     {
