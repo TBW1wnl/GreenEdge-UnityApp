@@ -3,10 +3,12 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     public GeodesicSphere.TerrainType terrainType;
+    public int countryId;
     private Camera mainCamera;
     private Renderer tileRenderer;
-    private Color originalColor;
+    private Color baseColor; // Store the base color (terrain or country color)
     private Color hoverColor;
+    private bool isHovered = false;
 
     void Start()
     {
@@ -21,8 +23,8 @@ public class Tile : MonoBehaviour
         tileRenderer = GetComponent<Renderer>();
         if (tileRenderer != null)
         {
-            originalColor = tileRenderer.material.color;
-            hoverColor = originalColor * 1.3f; // Slightly brighter
+            baseColor = tileRenderer.material.color;
+            UpdateHoverColor();
         }
     }
 
@@ -33,9 +35,12 @@ public class Tile : MonoBehaviour
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.gameObject == gameObject)
             {
-                Debug.Log($"Clicked on tile! Terrain: {terrainType}");
+                Debug.Log($"Clicked on tile! Terrain: {terrainType}, Country ID: {countryId}");
             }
         }
+
+        // Only handle hover if we have a camera
+        if (mainCamera == null) return;
 
         // Handle hover effect
         Ray hoverRay = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -56,11 +61,37 @@ public class Tile : MonoBehaviour
         }
     }
 
+    // Called by UIManager to update the base color when view changes
+    public void SetBaseColor(Color newBaseColor)
+    {
+        baseColor = newBaseColor;
+        UpdateHoverColor();
+
+        // If not currently hovered, update the actual display color
+        if (!isHovered && tileRenderer != null)
+        {
+            tileRenderer.material.color = baseColor;
+        }
+    }
+
+    private void UpdateHoverColor()
+    {
+        // Make hover color brighter than base color
+        hoverColor = baseColor * 1.3f;
+
+        // Ensure hover color doesn't exceed RGB(1,1,1)
+        hoverColor.r = Mathf.Min(hoverColor.r, 1f);
+        hoverColor.g = Mathf.Min(hoverColor.g, 1f);
+        hoverColor.b = Mathf.Min(hoverColor.b, 1f);
+    }
+
     void SetHoverEffect(bool isHovered)
     {
+        this.isHovered = isHovered;
+
         if (tileRenderer != null)
         {
-            tileRenderer.material.color = isHovered ? hoverColor : originalColor;
+            tileRenderer.material.color = isHovered ? hoverColor : baseColor;
         }
     }
 }

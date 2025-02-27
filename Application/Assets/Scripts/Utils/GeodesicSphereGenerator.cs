@@ -20,6 +20,8 @@ public class GeodesicSphere : MonoBehaviour
     [SerializeField] private int subdivisions = 2;
     [SerializeField] private float radius = 5f;
 
+    private Dictionary<int, List<int>> countries = new Dictionary<int, List<int>>();
+    private Dictionary<int, int> tileToCountry = new Dictionary<int, int>();
     private Dictionary<TerrainType, Material> terrainMaterials = new Dictionary<TerrainType, Material>();
     private Dictionary<TerrainType, List<int>> terrainTriangles = new Dictionary<TerrainType, List<int>>();
     private Dictionary<TerrainType, Color> terrainColors = new Dictionary<TerrainType, Color>
@@ -59,6 +61,7 @@ public class GeodesicSphere : MonoBehaviour
 
         GenerateSphere();
         AssignBiomes();
+        AssignCountries();
         CreateSubmeshes();
     }
 
@@ -265,6 +268,48 @@ public class GeodesicSphere : MonoBehaviour
             }
         }
     }
+
+    void AssignCountries()
+    {
+        List<int> landTiles = vertexTerrainMap.Where(kv => kv.Value != TerrainType.Water).Select(kv => kv.Key).ToList();
+        int numLandMasses = Mathf.Max(5, Mathf.FloorToInt(landTiles.Count / 100)); // Estimation des masses terrestres
+        int numCountries = Mathf.Clamp(numLandMasses * 3, 15, 30);
+
+        List<int> countryCenters = landTiles.OrderBy(_ => Random.value).Take(numCountries).ToList();
+
+        for (int i = 0; i < numCountries; i++)
+        {
+            countries[i] = new List<int>();
+        }
+
+        Queue<int> frontier = new Queue<int>();
+        Dictionary<int, int> visited = new Dictionary<int, int>();
+
+        foreach (int i in countryCenters)
+        {
+            frontier.Enqueue(i);
+            visited[i] = countryCenters.IndexOf(i);
+        }
+
+        while (frontier.Count > 0)
+        {
+            int tile = frontier.Dequeue();
+            int countryId = visited[tile];
+
+            countries[countryId].Add(tile);
+            tileToCountry[tile] = countryId;
+
+            foreach (int neighbor in GetVertexNeighbors(tile))
+            {
+                if (!visited.ContainsKey(neighbor) && vertexTerrainMap[neighbor] != TerrainType.Water)
+                {
+                    visited[neighbor] = countryId;
+                    frontier.Enqueue(neighbor);
+                }
+            }
+        }
+    }
+
 
     // ** Recursive Snow Expansion **
     void ExpandSnow(int tileIndex, float probability, int maxTiles)
@@ -641,9 +686,9 @@ public class GeodesicSphere : MonoBehaviour
                     Mesh tileMesh = new Mesh();
                     tileMesh.vertices = new Vector3[]
                     {
-                vertices[terrainTriangles[type][i]],
-                vertices[terrainTriangles[type][i + 1]],
-                vertices[terrainTriangles[type][i + 2]]
+                        vertices[terrainTriangles[type][i]],
+                        vertices[terrainTriangles[type][i + 1]],
+                        vertices[terrainTriangles[type][i + 2]]
                     };
                     tileMesh.triangles = new int[] { 0, 1, 2 };
                     tileMesh.RecalculateNormals();
@@ -658,9 +703,21 @@ public class GeodesicSphere : MonoBehaviour
                     // Attach the Tile script for interactivity
                     Tile tile = tileObj.AddComponent<Tile>();
                     tile.terrainType = type;
+                    tile.countryId = tileToCountry.ContainsKey(terrainTriangles[type][i]) ? tileToCountry[terrainTriangles[type][i]] : -1;
+
                 }
             }
         }
-
     }
+
+    public Color GetTerrainColor(TerrainType type)
+    {
+        return terrainColors[type];
+    }
+
+    public int GetCountryCount()
+    {
+        return countries.Count;
+    }
+
 }
