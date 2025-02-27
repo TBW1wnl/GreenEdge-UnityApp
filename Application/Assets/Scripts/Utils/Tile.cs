@@ -6,7 +6,7 @@ public class Tile : MonoBehaviour
     public int countryId;
     private Camera mainCamera;
     private Renderer tileRenderer;
-    private Color baseColor; // Store the base color (terrain or country color)
+    private Color baseColor;
     private Color hoverColor;
     private bool isHovered = false;
 
