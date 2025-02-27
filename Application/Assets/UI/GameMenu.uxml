@@ -1,0 +1,19 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/GameMenu.uss?fileID=7433441132597879392&amp;guid=0940e6b55a5597045a10a26f65d5e893&amp;type=3#GameMenu" />
+    <engine:VisualElement name="TopBar" style="flex-grow: 1;">
+        <engine:VisualElement name="Ressources" style="flex-grow: 1;">
+            <engine:Label text="Label" name="Label" />
+            <engine:Label text="Label" />
+            <engine:Label text="Label" />
+            <engine:Label text="Label" />
+            <engine:Label text="Label" />
+            <engine:Label text="Label" />
+        </engine:VisualElement>
+        <engine:VisualElement name="Buttons" style="flex-grow: 1;" />
+        <engine:VisualElement name="TimePanel" style="flex-grow: 1;" />
+    </engine:VisualElement>
+    <engine:VisualElement name="HelperButtons" style="flex-grow: 1; height: 80px; max-height: 80px;">
+        <engine:Button text="TerrainButton" name="TerrainButton" />
+        <engine:Button text="CountryButton" name="CountryButton" />
+    </engine:VisualElement>
+</engine:UXML>
