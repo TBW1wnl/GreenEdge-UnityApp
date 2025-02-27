@@ -4,6 +4,14 @@ public class Tile : MonoBehaviour
 {
     public GeodesicSphere.TerrainType terrainType;
     public int countryId;
+    public int population = 0;
+
+    public Infrastructure RoadInfrastructure { get; set; } = new Infrastructure();
+    public Infrastructure RailInfrastructure { get; set; } = new Infrastructure();
+    public Infrastructure AirInfrastructure { get; set; } = new Infrastructure();
+    public Infrastructure SeaInfrastructure { get; set; } = new Infrastructure();
+
+
     private Camera mainCamera;
     private Renderer tileRenderer;
     private Color baseColor;
@@ -36,6 +44,11 @@ public class Tile : MonoBehaviour
             if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.gameObject == gameObject)
             {
                 Debug.Log($"Clicked on tile! Terrain: {terrainType}, Country ID: {countryId}");
+                Debug.Log($"Population: {population}");
+                Debug.Log($"Road Level: {RoadInfrastructure.Level}/{RoadInfrastructure.MaxLevel}");
+                Debug.Log($"Rail Level: {RailInfrastructure.Level}/{RailInfrastructure.MaxLevel}");
+                Debug.Log($"Air Level: {AirInfrastructure.Level}/{AirInfrastructure.MaxLevel}");
+                Debug.Log($"Sea Level: {SeaInfrastructure.Level}/{SeaInfrastructure.MaxLevel}");
             }
         }
 

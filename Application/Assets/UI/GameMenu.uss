@@ -3,3 +3,8 @@
     -unity-font-style: bold;
     color: rgb(68, 138, 255);
 }
+
+.main-background {
+    background-image: url("carbon_fiber.png");
+    background-size: cover;
+}

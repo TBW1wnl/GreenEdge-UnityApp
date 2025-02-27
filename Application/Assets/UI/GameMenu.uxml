@@ -1,18 +1,14 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/GameMenu.uss?fileID=7433441132597879392&amp;guid=0940e6b55a5597045a10a26f65d5e893&amp;type=3#GameMenu" />
-    <engine:VisualElement name="TopBar" style="flex-grow: 1;">
-        <engine:VisualElement name="Ressources" style="flex-grow: 1;">
-            <engine:Label text="Label" name="Label" />
-            <engine:Label text="Label" />
-            <engine:Label text="Label" />
-            <engine:Label text="Label" />
-            <engine:Label text="Label" />
-            <engine:Label text="Label" />
+    <engine:VisualElement name="TopBar" enabled="true" style="flex-grow: 1; opacity: 0;">
+        <engine:VisualElement name="Ressources" class="main-background" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/UI/360_F_276667553_jcLgdZz6QtRuTj3SfOcTzJ3I40YqIEUs.jpg?fileID=2800000&amp;guid=77c43c6630be0f241a335c10155d3985&amp;type=3#360_F_276667553_jcLgdZz6QtRuTj3SfOcTzJ3I40YqIEUs&quot;); -unity-background-image-tint-color: rgb(0, 102, 102); max-height: 10%; align-self: auto; align-content: auto; align-items: flex-start; flex-wrap: wrap; height: 5%; min-height: 4%;">
+            <engine:VisualElement style="flex-grow: 1; -unity-background-image-tint-color: rgb(20, 37, 51); background-color: rgb(7, 9, 8); border-top-left-radius: 16px; border-top-right-radius: 16px; border-bottom-right-radius: 16px; border-bottom-left-radius: 16px; justify-content: center; align-content: auto; margin-top: 8px; margin-right: 8px; margin-bottom: 8px; margin-left: 8px; padding-top: 4px; padding-right: 4px; padding-bottom: 4px; padding-left: 4px; max-height: 50px; align-self: auto;">
+                <engine:Label text="Label" name="Label" style="text-overflow: clip; white-space: pre-wrap; flex-wrap: wrap; flex-direction: column; align-self: auto; align-content: auto; background-color: rgba(255, 255, 255, 0); color: rgb(255, 255, 255); margin-left: 4px;" />
+            </engine:VisualElement>
         </engine:VisualElement>
         <engine:VisualElement name="Buttons" style="flex-grow: 1;" />
-        <engine:VisualElement name="TimePanel" style="flex-grow: 1;" />
     </engine:VisualElement>
-    <engine:VisualElement name="HelperButtons" style="flex-grow: 1; height: 80px; max-height: 80px;">
+    <engine:VisualElement name="HelperButtons" class="main-background" style="flex-grow: 1; height: 90px; width: 10%; right: 0; top: auto; position: absolute; bottom: 0; background-image: url(&quot;project://database/Assets/UI/360_F_276667553_jcLgdZz6QtRuTj3SfOcTzJ3I40YqIEUs.jpg?fileID=2800000&amp;guid=77c43c6630be0f241a335c10155d3985&amp;type=3#360_F_276667553_jcLgdZz6QtRuTj3SfOcTzJ3I40YqIEUs&quot;); -unity-background-image-tint-color: rgb(0, 102, 102);">
         <engine:Button text="TerrainButton" name="TerrainButton" />
         <engine:Button text="CountryButton" name="CountryButton" />
     </engine:VisualElement>

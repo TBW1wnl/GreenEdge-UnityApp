@@ -223,7 +223,7 @@ public class GeodesicSphere : MonoBehaviour
         // ** Step 4: Convert Beaches **
         for (int i = 0; i < vertices.Count; i++)
         {
-            if (vertexTerrainMap[i] != TerrainType.Water && vertexTerrainMap[i] != TerrainType.Cold) // Exclude Cold Tiles
+            if (vertexTerrainMap[i] != TerrainType.Water && vertexTerrainMap[i] != TerrainType.Cold)
             {
                 foreach (int neighborIndex in GetVertexNeighbors(i))
                 {
@@ -345,14 +345,24 @@ public class GeodesicSphere : MonoBehaviour
 
     void ExpandBiome(int tileIndex, TerrainType biome, int remainingTiles)
     {
-        if (remainingTiles <= 0) return;  // Stop expansion when we hit the limit
-        if (vertexTerrainMap[tileIndex] != TerrainType.Water) return; // Only expand from water
+        if (remainingTiles <= 0)
+        {
+            return;
+        }
+
+        if (vertexTerrainMap[tileIndex] != TerrainType.Water)
+        {
+            return;
+        }
 
         vertexTerrainMap[tileIndex] = biome;
         remainingTiles--;
 
         List<int> neighbors = GetVertexNeighbors(tileIndex);
-        if (neighbors.Count == 0) return;
+        if (neighbors.Count == 0)
+        {
+            return;
+        }
 
         // Shuffle neighbors for randomness
         neighbors = neighbors.OrderBy(n => Random.value).ToList();
@@ -362,7 +372,7 @@ public class GeodesicSphere : MonoBehaviour
             if (vertexTerrainMap[neighbor] == TerrainType.Water)
             {
                 float expansionChance = Mathf.Clamp(1f - (remainingTiles / 150f), 0.5f, 0.9f);
-                if (Random.value < expansionChance) // More aggressive spreading
+                if (Random.value < expansionChance)
                 {
                     ExpandBiome(neighbor, biome, remainingTiles);
                 }
@@ -374,7 +384,10 @@ public class GeodesicSphere : MonoBehaviour
     void GenerateMountainChains()
     {
         int randomLandTile = GetRandomTileOfType(TerrainType.Plains, TerrainType.Forest);
-        if (randomLandTile == -1) return;
+        if (randomLandTile == -1)
+        {
+            return;
+        }
 
         List<int> mountainChain = new List<int> { randomLandTile };
         int chainLength = Random.Range(5, 20);
@@ -384,7 +397,10 @@ public class GeodesicSphere : MonoBehaviour
             int lastTile = mountainChain[mountainChain.Count - 1];
             List<int> neighbors = GetVertexNeighbors(lastTile);
 
-            if (neighbors.Count == 0) break;
+            if (neighbors.Count == 0)
+            {
+                break;
+            }
 
             int nextTile = neighbors[Random.Range(0, neighbors.Count)];
             if (!mountainChain.Contains(nextTile) && vertexTerrainMap[nextTile] != TerrainType.Water)
@@ -454,7 +470,10 @@ public class GeodesicSphere : MonoBehaviour
         List<int> candidates = new List<int>();
         for (int i = 0; i < vertexTerrainMap.Count; i++)
         {
-            if (types.Contains(vertexTerrainMap[i])) candidates.Add(i);
+            if (types.Contains(vertexTerrainMap[i]))
+            {
+                candidates.Add(i);
+            }
         }
         return (candidates.Count > 0) ? candidates[Random.Range(0, candidates.Count)] : -1;
     }
@@ -705,8 +724,46 @@ public class GeodesicSphere : MonoBehaviour
                     tile.terrainType = type;
                     tile.countryId = tileToCountry.ContainsKey(terrainTriangles[type][i]) ? tileToCountry[terrainTriangles[type][i]] : -1;
 
+                    AssignTileProprieties(tile);
                 }
             }
+        }
+    }
+
+    private void AssignTileProprieties(Tile tile)
+    {
+        if (tile.terrainType is TerrainType.Water)
+        {
+            return;
+        }
+
+        if (tile.terrainType is TerrainType.Beach)
+        {
+            tile.SeaInfrastructure.MaxLevel = Random.Range(3, 10);
+            tile.SeaInfrastructure.Level = Random.Range(0, tile.SeaInfrastructure.MaxLevel);
+        }
+        else
+        {
+            tile.SeaInfrastructure.MaxLevel = 0;
+            tile.SeaInfrastructure.Level = 0;
+        }
+
+        tile.RoadInfrastructure.MaxLevel = Random.Range(1, 10);
+        tile.RoadInfrastructure.Level = Random.Range(1, tile.RoadInfrastructure.MaxLevel);
+
+        tile.RailInfrastructure.MaxLevel = Random.Range(1, 10);
+        tile.RailInfrastructure.Level = Random.Range(0, tile.RailInfrastructure.MaxLevel);
+
+        tile.AirInfrastructure.MaxLevel = Random.Range(1, 10);
+        tile.AirInfrastructure.Level = Random.Range(0, tile.AirInfrastructure.MaxLevel);
+
+        if (tile.terrainType is TerrainType.City)
+        {
+            tile.population = Random.Range(10000, 1000000);
+        }
+        else
+        {
+            tile.population = Random.Range(1000, 100000);
         }
     }
 

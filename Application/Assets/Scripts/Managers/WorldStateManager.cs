@@ -6,6 +6,7 @@ public class WorldStateManager : MonoBehaviour
 
     [Range(0, 100)]
     public int GlobalWarming { get; internal set; } = 0;
+    public int WorldPopulation { get; internal set; } = 0;
 
     private WorldStateManager() { }
 
@@ -20,6 +21,16 @@ public class WorldStateManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void ComputeWorldPopulation()
+    {
+        WorldPopulation = 0;
+        foreach (Tile tile in FindObjectsByType<Tile>(FindObjectsSortMode.None))
+        {
+            WorldPopulation += tile.population;
+        }
+        Debug.Log($"Population mondiale : {WorldPopulation}");
     }
 
     public void IncreaseTension(int amount)
