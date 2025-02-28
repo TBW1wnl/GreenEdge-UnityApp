@@ -20,6 +20,8 @@ namespace SlimUI.ModernMenu{
         public GameObject exitMenu;
         [Tooltip("Optional 4th Menu")]
         public GameObject extrasMenu;
+        [Header("NEW GAME MENU")]
+        public GameObject ScenarioCanvas;
 
         public enum Theme {custom1, custom2, custom3};
         [Header("THEME SETTINGS")]
@@ -92,7 +94,20 @@ namespace SlimUI.ModernMenu{
 			SetThemeColors();
 		}
 
-		void SetThemeColors()
+		/// <summary>
+		/// test pour voir si ok
+		/// </summary>
+        public void ShowNewGameCanvas()
+        {
+            mainMenu.SetActive(false);
+            if (ScenarioCanvas != null)
+            {
+                ScenarioCanvas.SetActive(true);
+            }
+        }
+
+
+        void SetThemeColors()
 		{
 			switch (theme)
 			{
@@ -147,7 +162,13 @@ namespace SlimUI.ModernMenu{
 			playMenu.SetActive(false);
 		}
 
-		public void Position2(){
+        public void Position3()
+        {
+            DisablePlayCampaign();
+            CameraObject.SetFloat("Animate", 2);
+        }
+
+        public void Position2(){
 			DisablePlayCampaign();
 			CameraObject.SetFloat("Animate",1);
 		}
