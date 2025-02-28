@@ -1,0 +1,26 @@
+.custom-label {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(68, 138, 255);
+}
+
+#HelperButtons {
+    flex-grow: 1;
+    height: 90px;
+    width: 10%;
+    right: 0;
+    top: auto;
+    position: absolute;
+    bottom: 0;
+
+}
+
+@media screen and (max-width: 768px) {
+    #TopBar {
+        flex-grow: 1;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+}

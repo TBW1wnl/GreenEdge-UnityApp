@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class GameMenu : EditorWindow
+public class TopBar : EditorWindow
 {
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
@@ -10,7 +10,7 @@ public class GameMenu : EditorWindow
     [MenuItem("Window/UI Toolkit/GameMenu")]
     public static void ShowExample()
     {
-        GameMenu wnd = GetWindow<GameMenu>();
+        TopBar wnd = GetWindow<TopBar>();
         wnd.titleContent = new GUIContent("GameMenu");
     }
 

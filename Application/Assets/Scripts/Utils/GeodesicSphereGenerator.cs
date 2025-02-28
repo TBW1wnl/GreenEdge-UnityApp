@@ -31,7 +31,7 @@ public class GeodesicSphere : MonoBehaviour
         { TerrainType.Desert, Color.yellow },                    // Yellow
         { TerrainType.Plains, new Color(0.6f, 0.8f, 0.2f) },     // Lime
         { TerrainType.Forest, new Color(0.5f, 0.6f, 0.1f) },     // Olive
-        { TerrainType.Hills, new Color(0.4f, 0.4f, 0f) },        // 
+        { TerrainType.Hills, new Color(0.4f, 0.4f, 0f) },        // Dark Olive
         { TerrainType.City, Color.gray },                        // Grey
         { TerrainType.Mountain, new Color(0.5f, 0.35f, 0.2f) },  // Brown
         { TerrainType.Cold, Color.white }                        // White
@@ -84,7 +84,7 @@ public class GeodesicSphere : MonoBehaviour
         for (int i = 0; i < vertices.Count; i++)
         {
             vertices[i] = vertices[i].normalized * radius;
-            vertexTerrainMap[i] = TerrainType.Water;  // Default, all is water
+            vertexTerrainMap[i] = TerrainType.Water;
         }
     }
 
@@ -238,7 +238,8 @@ public class GeodesicSphere : MonoBehaviour
 
 
         // ** Step 5: Generate Deserts **
-        GenerateDeserts();
+        // not working currently
+        //GenerateDeserts();
 
         GenerateForests();
 
@@ -272,7 +273,7 @@ public class GeodesicSphere : MonoBehaviour
     void AssignCountries()
     {
         List<int> landTiles = vertexTerrainMap.Where(kv => kv.Value != TerrainType.Water).Select(kv => kv.Key).ToList();
-        int numLandMasses = Mathf.Max(5, Mathf.FloorToInt(landTiles.Count / 100)); // Estimation des masses terrestres
+        int numLandMasses = Mathf.Max(5, Mathf.FloorToInt(landTiles.Count / 100));
         int numCountries = Mathf.Clamp(numLandMasses * 3, 15, 30);
 
         List<int> countryCenters = landTiles.OrderBy(_ => Random.value).Take(numCountries).ToList();
@@ -331,7 +332,7 @@ public class GeodesicSphere : MonoBehaviour
     // ** Generates Snow Caps **
     void GenerateSnowCaps()
     {
-        int snowLimit = vertices.Count / 12;  // Adjust based on planet size
+        int snowLimit = vertices.Count / 12;
 
         foreach (int tile in GetNorthernmostTiles())
         {
@@ -490,7 +491,7 @@ public class GeodesicSphere : MonoBehaviour
                 northernTiles.Clear();
                 northernTiles.Add(i);
             }
-            else if (Mathf.Abs(vertices[i].y - maxY) < 0.05f)  // Consider close heights
+            else if (Mathf.Abs(vertices[i].y - maxY) < 0.05f)
             {
                 northernTiles.Add(i);
             }
@@ -510,7 +511,7 @@ public class GeodesicSphere : MonoBehaviour
                 southernTiles.Clear();
                 southernTiles.Add(i);
             }
-            else if (Mathf.Abs(vertices[i].y - minY) < 0.05f)  // Consider close heights
+            else if (Mathf.Abs(vertices[i].y - minY) < 0.05f)
             {
                 southernTiles.Add(i);
             }
@@ -520,8 +521,8 @@ public class GeodesicSphere : MonoBehaviour
 
     void GenerateDeserts()
     {
-        int desertRegions = Random.Range(vertices.Count / 200, vertices.Count / 80); // Number of desert regions
-        float maxY = radius; // Maximum possible Y-value (at poles)
+        int desertRegions = Random.Range(vertices.Count / 200, vertices.Count / 80);
+        float maxY = radius;
 
         for (int j = 0; j < desertRegions; j++)
         {
@@ -529,10 +530,10 @@ public class GeodesicSphere : MonoBehaviour
             if (startTile == -1)
             {
                 Debug.Log("Found no valid tiles for desert generation");
-                continue; // Skip if no valid tile
+                continue;
             }
 
-            int desertSize = Random.Range(20, 100); // Random size for each desert
+            int desertSize = Random.Range(20, 100);
             ExpandBiome(startTile, TerrainType.Desert, desertSize);
         }
     }
@@ -544,7 +545,7 @@ public class GeodesicSphere : MonoBehaviour
 
         for (int i = 0; i < vertices.Count; i++)
         {
-            if (vertexTerrainMap[i] == TerrainType.Plains) // Only modify plains
+            if (vertexTerrainMap[i] == TerrainType.Plains)
             {
                 float chance = Random.value;
 
