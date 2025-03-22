@@ -12,7 +12,7 @@
         <engine:VisualElement name="container" style="flex-grow: 1;">
             <engine:Button text="TerrainButton" name="TerrainButton" />
             <engine:Button text="CountryButton" name="CountryButton" />
-            <engine:Button text="Owned Button" name="OwnedButton" />
+            <engine:Toggle label="Ownedtoggle&#10;" name="OwnedToggle" />
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

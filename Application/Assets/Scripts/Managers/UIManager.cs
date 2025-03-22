@@ -14,7 +14,7 @@ public class UIManager : MonoBehaviour
     public UIDocument uiDocument;
     private Button terrainButton { get; set; }
     private Button countryButton { get; set; }
-    private Button ownedButton { get; set; }
+    private Toggle ownedButton { get; set; }
 
     private Label Funds;
     private Label Population;
@@ -43,13 +43,13 @@ public class UIManager : MonoBehaviour
         // Find buttons by ID
         terrainButton = root.Q<Button>("TerrainButton");
         countryButton = root.Q<Button>("CountryButton");
-        ownedButton = root.Q<Button>("OwnedButton");
+        ownedButton = root.Q<Toggle>("OwnedButton");
 
         Funds = root.Q<Label>("Funds");
         Population = root.Q<Label>("Population");
 
         // Check if buttons were found
-        if (terrainButton == null || countryButton == null || ownedButton == null)
+        if (terrainButton is null || countryButton is null || ownedButton is null)
         {
             Debug.LogError("One or more UI Toolkit buttons not found! Make sure their IDs are TerrainButton and CountryButton in UXML.");
             return;
@@ -59,6 +59,12 @@ public class UIManager : MonoBehaviour
         terrainButton.clicked += () => ChangeViewMode(ViewMode.Terrain);
         countryButton.clicked += () => ChangeViewMode(ViewMode.Country);
 
+        if (ownedButton.value)
+        {
+            
+        }
+
+
         // Ensure AssignCountries() has been called before generating colors
         StartCoroutine(WaitForCountries());
 
@@ -66,6 +72,16 @@ public class UIManager : MonoBehaviour
         CurrentViewMode = ViewMode.Terrain;
 
         Debug.Log("UI Toolkit buttons found and events assigned!");
+    }
+
+    private void ShowOwnedCity()
+    {
+
+    }
+
+    private void HideOwnedCity()
+    {
+
     }
 
     // Wait until countries are assigned
