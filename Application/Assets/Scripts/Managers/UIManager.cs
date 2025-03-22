@@ -122,16 +122,16 @@ public class UIManager : MonoBehaviour
 
             if (mode == ViewMode.Terrain)
             {
-                Color baseColor = geodesicSphere.GetTerrainColor(tile.terrainType);
+                Color baseColor = geodesicSphere.GetTerrainColor(tile.tileData.TerrainType);
                 tile.SetBaseColor(baseColor); // Tell the tile its base color has changed
                 renderer.material.color = baseColor;
             }
             else if (mode == ViewMode.Country)
             {
                 // Only change color if the tile has a valid country
-                if (tile.countryId >= 0 && countryColors.ContainsKey(tile.countryId))
+                if (tile.tileData.CountryId >= 0 && countryColors.ContainsKey(tile.tileData.CountryId))
                 {
-                    Color countryColor = countryColors[tile.countryId];
+                    Color countryColor = countryColors[tile.tileData.CountryId];
                     tile.SetBaseColor(countryColor); // Tell the tile its base color has changed
                     renderer.material.color = countryColor;
                 }

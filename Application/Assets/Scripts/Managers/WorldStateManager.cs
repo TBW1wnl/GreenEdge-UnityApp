@@ -28,7 +28,7 @@ public class WorldStateManager : MonoBehaviour
         WorldPopulation = 0;
         foreach (Tile tile in FindObjectsByType<Tile>(FindObjectsSortMode.None))
         {
-            WorldPopulation += tile.population;
+            WorldPopulation += tile.tileData.Population;
         }
         Debug.Log($"Population mondiale : {WorldPopulation}");
     }

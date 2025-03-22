@@ -7,7 +7,7 @@ public class GeodesicSphere : MonoBehaviour
     public int Population = 0;
     public enum TerrainType
     {
-        Water,
+        Ocean,
         Beach,
         Desert,
         Plains,
@@ -27,7 +27,7 @@ public class GeodesicSphere : MonoBehaviour
     private Dictionary<TerrainType, List<int>> terrainTriangles = new Dictionary<TerrainType, List<int>>();
     private Dictionary<TerrainType, Color> terrainColors = new Dictionary<TerrainType, Color>
     {
-        { TerrainType.Water, new Color(0.2f, 0.4f, 0.8f) },      // Blue
+        { TerrainType.Ocean, new Color(0.2f, 0.4f, 0.8f) },      // Blue
         { TerrainType.Beach, new Color(0.93f, 0.91f, 0.67f) },   // Beige
         { TerrainType.Desert, Color.yellow },                    // Yellow
         { TerrainType.Plains, new Color(0.6f, 0.8f, 0.2f) },     // Lime
@@ -85,7 +85,7 @@ public class GeodesicSphere : MonoBehaviour
         for (int i = 0; i < vertices.Count; i++)
         {
             vertices[i] = vertices[i].normalized * radius;
-            vertexTerrainMap[i] = TerrainType.Water;
+            vertexTerrainMap[i] = TerrainType.Ocean;
         }
     }
 
@@ -208,7 +208,7 @@ public class GeodesicSphere : MonoBehaviour
         // ** Step 1: Initialize Water Map **
         for (int i = 0; i < vertices.Count; i++)
         {
-            vertexTerrainMap[i] = TerrainType.Water;
+            vertexTerrainMap[i] = TerrainType.Ocean;
         }
 
         // ** Step 2: Generate Snow at Poles **
@@ -217,18 +217,18 @@ public class GeodesicSphere : MonoBehaviour
         // ** Step 3: Generate Landmasses **
         for (int i = 0; i < Random.Range(5, 10); i++)
         {
-            int randomWaterTile = GetRandomTileOfType(TerrainType.Water);
+            int randomWaterTile = GetRandomTileOfType(TerrainType.Ocean);
             ExpandBiome(randomWaterTile, TerrainType.Plains, Random.Range(30, 100));
         }
 
         // ** Step 4: Convert Beaches **
         for (int i = 0; i < vertices.Count; i++)
         {
-            if (vertexTerrainMap[i] != TerrainType.Water && vertexTerrainMap[i] != TerrainType.Cold)
+            if (vertexTerrainMap[i] != TerrainType.Ocean && vertexTerrainMap[i] != TerrainType.Cold)
             {
                 foreach (int neighborIndex in GetVertexNeighbors(i))
                 {
-                    if (vertexTerrainMap[neighborIndex] == TerrainType.Water && Random.value < 0.95f)
+                    if (vertexTerrainMap[neighborIndex] == TerrainType.Ocean && Random.value < 0.95f)
                     {
                         vertexTerrainMap[i] = TerrainType.Beach;
                         break;
@@ -247,7 +247,7 @@ public class GeodesicSphere : MonoBehaviour
         // ** Step 6: Generate Mountain Chains **
         for (int i = 0; i < vertices.Count; i++)
         {
-            if (vertexTerrainMap[i] != TerrainType.Water &&
+            if (vertexTerrainMap[i] != TerrainType.Ocean &&
                 vertexTerrainMap[i] != TerrainType.Beach &&
                 vertexTerrainMap[i] != TerrainType.Cold &&
                 Random.value < 0.01f)  // % chance per tile**
@@ -260,7 +260,7 @@ public class GeodesicSphere : MonoBehaviour
         // ** Step 7: Scatter Cities (single-tile only) **
         for (int i = 0; i < vertices.Count; i++)
         {
-            if (vertexTerrainMap[i] != TerrainType.Water &&
+            if (vertexTerrainMap[i] != TerrainType.Ocean &&
                 vertexTerrainMap[i] != TerrainType.Beach &&
                 vertexTerrainMap[i] != TerrainType.Mountain &&
                 vertexTerrainMap[i] != TerrainType.Cold &&
@@ -273,7 +273,7 @@ public class GeodesicSphere : MonoBehaviour
 
     void AssignCountries()
     {
-        List<int> landTiles = vertexTerrainMap.Where(kv => kv.Value != TerrainType.Water).Select(kv => kv.Key).ToList();
+        List<int> landTiles = vertexTerrainMap.Where(kv => kv.Value != TerrainType.Ocean).Select(kv => kv.Key).ToList();
         int numLandMasses = Mathf.Max(5, Mathf.FloorToInt(landTiles.Count / 100));
         int numCountries = Mathf.Clamp(numLandMasses * 3, 15, 30);
 
@@ -303,7 +303,7 @@ public class GeodesicSphere : MonoBehaviour
 
             foreach (int neighbor in GetVertexNeighbors(tile))
             {
-                if (!visited.ContainsKey(neighbor) && vertexTerrainMap[neighbor] != TerrainType.Water)
+                if (!visited.ContainsKey(neighbor) && vertexTerrainMap[neighbor] != TerrainType.Ocean)
                 {
                     visited[neighbor] = countryId;
                     frontier.Enqueue(neighbor);
@@ -352,7 +352,7 @@ public class GeodesicSphere : MonoBehaviour
             return;
         }
 
-        if (vertexTerrainMap[tileIndex] != TerrainType.Water)
+        if (vertexTerrainMap[tileIndex] != TerrainType.Ocean)
         {
             return;
         }
@@ -371,7 +371,7 @@ public class GeodesicSphere : MonoBehaviour
 
         foreach (int neighbor in neighbors)
         {
-            if (vertexTerrainMap[neighbor] == TerrainType.Water)
+            if (vertexTerrainMap[neighbor] == TerrainType.Ocean)
             {
                 float expansionChance = Mathf.Clamp(1f - (remainingTiles / 150f), 0.5f, 0.9f);
                 if (Random.value < expansionChance)
@@ -405,7 +405,7 @@ public class GeodesicSphere : MonoBehaviour
             }
 
             int nextTile = neighbors[Random.Range(0, neighbors.Count)];
-            if (!mountainChain.Contains(nextTile) && vertexTerrainMap[nextTile] != TerrainType.Water)
+            if (!mountainChain.Contains(nextTile) && vertexTerrainMap[nextTile] != TerrainType.Ocean)
             {
                 mountainChain.Add(nextTile);
             }
@@ -662,7 +662,7 @@ public class GeodesicSphere : MonoBehaviour
 
     TerrainType GetDominantType(Dictionary<TerrainType, int> counts)
     {
-        TerrainType dominant = TerrainType.Water;
+        TerrainType dominant = TerrainType.Ocean;
         int maxCount = 0;
 
         foreach (var pair in counts)
@@ -723,8 +723,8 @@ public class GeodesicSphere : MonoBehaviour
 
                     // Attach the Tile script for interactivity
                     Tile tile = tileObj.AddComponent<Tile>();
-                    tile.terrainType = type;
-                    tile.countryId = tileToCountry.ContainsKey(terrainTriangles[type][i]) ? tileToCountry[terrainTriangles[type][i]] : -1;
+                    tile.tileData.TerrainType = type;
+                    tile.tileData.CountryId = tileToCountry.ContainsKey(terrainTriangles[type][i]) ? tileToCountry[terrainTriangles[type][i]] : -1;
 
                     AssignTileProprieties(tile);
                 }
@@ -736,45 +736,45 @@ public class GeodesicSphere : MonoBehaviour
     {
         GaussianRandom gaussRandom = new();
 
-        if (tile.terrainType is TerrainType.Water)
+        if (tile.tileData.TerrainType is TerrainType.Ocean)
         {
             return;
         }
 
-        if (tile.terrainType is TerrainType.Beach)
+        if (tile.tileData.TerrainType is TerrainType.Beach)
         {
-            tile.SeaInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(1, 10, 3, 0.2);
-            tile.SeaInfrastructure.Level = Random.Range(0, tile.SeaInfrastructure.MaxLevel);
+            tile.tileData.SeaInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(1, 10, 3, 0.2);
+            tile.tileData.SeaInfrastructure.Level = Random.Range(0, tile.tileData.SeaInfrastructure.MaxLevel);
         }
         else
         {
-            tile.SeaInfrastructure.MaxLevel = 0;
-            tile.SeaInfrastructure.Level = 0;
+            tile.tileData.SeaInfrastructure.MaxLevel = 0;
+            tile.tileData.SeaInfrastructure.Level = 0;
         }
 
-        tile.RoadInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(2, 10, 5, 0.2);
-        tile.RoadInfrastructure.Level = Random.Range(1, tile.RoadInfrastructure.MaxLevel);
+        tile.tileData.RoadInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(2, 10, 5, 0.2);
+        tile.tileData.RoadInfrastructure.Level = Random.Range(1, tile.tileData.RoadInfrastructure.MaxLevel);
 
-        tile.RailInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(1, 10, 5, 0.2);
-        tile.RailInfrastructure.Level = Random.Range(0, tile.RailInfrastructure.MaxLevel);
+        tile.tileData.RailInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(1, 10, 5, 0.2);
+        tile.tileData.RailInfrastructure.Level = Random.Range(0, tile.tileData.RailInfrastructure.MaxLevel);
 
-        tile.AirInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(0, 10, 2, 0.2);
-        tile.RoadInfrastructure.Level = Random.Range(1, tile.AirInfrastructure.MaxLevel);
+        tile.tileData.AirInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(0, 10, 2, 0.2);
+        tile.tileData.RoadInfrastructure.Level = Random.Range(1, tile.tileData.AirInfrastructure.MaxLevel);
 
-        if (tile.terrainType is TerrainType.City)
+        if (tile.tileData.TerrainType is TerrainType.City)
         {
-            tile.population = gaussRandom.NextGaussianRange(10000, 10000000, 100000, 0.35);
+            tile.tileData.Population = gaussRandom.NextGaussianRange(10000, 10000000, 100000, 0.35);
         }
-        else if (tile.terrainType is TerrainType.Plains or TerrainType.Beach)
+        else if (tile.tileData.TerrainType is TerrainType.Plains or TerrainType.Beach)
         {
-            tile.population = gaussRandom.NextGaussianRange(1000, 100000, 5000, 0.35);
+            tile.tileData.Population = gaussRandom.NextGaussianRange(1000, 100000, 5000, 0.35);
         }
         else
         {
-            tile.population = gaussRandom.NextGaussianRange(500, 5000, 1000, 0.35);
+            tile.tileData.Population = gaussRandom.NextGaussianRange(500, 5000, 1000, 0.35);
         }
 
-        Population += tile.population;
+        Population += tile.tileData.Population;
     }
 
     public Color GetTerrainColor(TerrainType type)

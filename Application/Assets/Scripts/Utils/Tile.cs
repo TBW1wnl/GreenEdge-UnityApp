@@ -1,17 +1,21 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Entity;
 
 public class Tile : MonoBehaviour
 {
-    public GeodesicSphere.TerrainType terrainType;
-    public int countryId;
-    public int population = 0;
+    //public GeodesicSphere.TerrainType terrainType;
+    //public string TileName = "no name";
+    //public int countryId;
+    //public int population = 0;
 
-    public Infrastructure RoadInfrastructure { get; set; } = new Infrastructure();
-    public Infrastructure RailInfrastructure { get; set; } = new Infrastructure();
-    public Infrastructure AirInfrastructure { get; set; } = new Infrastructure();
-    public Infrastructure SeaInfrastructure { get; set; } = new Infrastructure();
+    //public Infrastructure RoadInfrastructure { get; set; } = new Infrastructure();
+    //public Infrastructure RailInfrastructure { get; set; } = new Infrastructure();
+    //public Infrastructure AirInfrastructure { get; set; } = new Infrastructure();
+    //public Infrastructure SeaInfrastructure { get; set; } = new Infrastructure();
+
+    public TileEntity tileData = new();
 
     private Camera mainCamera;
     private Renderer tileRenderer;
@@ -37,6 +41,11 @@ public class Tile : MonoBehaviour
 
     void Update()
     {
+        if (ModalManager.isModalOpen)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0) && mainCamera != null)
         {
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
