@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class Tile : MonoBehaviour
 {
@@ -11,7 +13,6 @@ public class Tile : MonoBehaviour
     public Infrastructure AirInfrastructure { get; set; } = new Infrastructure();
     public Infrastructure SeaInfrastructure { get; set; } = new Infrastructure();
 
-
     private Camera mainCamera;
     private Renderer tileRenderer;
     private Color baseColor;
@@ -20,14 +21,12 @@ public class Tile : MonoBehaviour
 
     void Start()
     {
-        // Find the camera
         mainCamera = GameObject.Find("OrbitalCamera")?.GetComponent<Camera>();
         if (mainCamera == null)
         {
             Debug.LogError("OrbitalCamera not found! Make sure the name is correct.");
         }
 
-        // Get Renderer and store the original color
         tileRenderer = GetComponent<Renderer>();
         if (tileRenderer != null)
         {
@@ -43,19 +42,11 @@ public class Tile : MonoBehaviour
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.gameObject == gameObject)
             {
-                Debug.Log($"Clicked on tile! Terrain: {terrainType}, Country ID: {countryId}");
-                Debug.Log($"Population: {population}");
-                Debug.Log($"Road Level: {RoadInfrastructure.Level}/{RoadInfrastructure.MaxLevel}");
-                Debug.Log($"Rail Level: {RailInfrastructure.Level}/{RailInfrastructure.MaxLevel}");
-                Debug.Log($"Air Level: {AirInfrastructure.Level}/{AirInfrastructure.MaxLevel}");
-                Debug.Log($"Sea Level: {SeaInfrastructure.Level}/{SeaInfrastructure.MaxLevel}");
+                OpenTilePopup();
             }
         }
 
-        // Only handle hover if we have a camera
         if (mainCamera == null) return;
-
-        // Handle hover effect
         Ray hoverRay = mainCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(hoverRay, out RaycastHit hoverHit))
         {
@@ -74,13 +65,36 @@ public class Tile : MonoBehaviour
         }
     }
 
-    // Called by UIManager to update the base color when view changes
+    private void OpenTilePopup()
+    {
+        GameObject popupPrefab = TileManager.Instance.GetPopupPrefab();
+
+        if (popupPrefab == null)
+        {
+            Debug.LogError("Popup prefab not available in TileManager!");
+            return;
+        }
+
+        Canvas mainCanvas = FindAnyObjectByType<Canvas>();
+        if (mainCanvas == null)
+        {
+            Debug.LogError("Canvas not found in the scene!");
+            return;
+        }
+
+        GameObject popup = Instantiate(popupPrefab, mainCanvas.transform);
+        ModalManager popupController = popup.GetComponent<ModalManager>();
+        if (popupController != null)
+        {
+            popupController.Initialize(this);
+        }
+    }
+
     public void SetBaseColor(Color newBaseColor)
     {
         baseColor = newBaseColor;
         UpdateHoverColor();
 
-        // If not currently hovered, update the actual display color
         if (!isHovered && tileRenderer != null)
         {
             tileRenderer.material.color = baseColor;
@@ -89,10 +103,8 @@ public class Tile : MonoBehaviour
 
     private void UpdateHoverColor()
     {
-        // Make hover color brighter than base color
         hoverColor = baseColor * 1.3f;
 
-        // Ensure hover color doesn't exceed RGB(1,1,1)
         hoverColor.r = Mathf.Min(hoverColor.r, 1f);
         hoverColor.g = Mathf.Min(hoverColor.g, 1f);
         hoverColor.b = Mathf.Min(hoverColor.b, 1f);

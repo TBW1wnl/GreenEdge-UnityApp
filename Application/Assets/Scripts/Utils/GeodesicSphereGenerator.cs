@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GeodesicSphere : MonoBehaviour
 {
+    public int Population = 0;
     public enum TerrainType
     {
         Water,
@@ -49,7 +50,7 @@ public class GeodesicSphere : MonoBehaviour
             terrainTriangles[type] = new List<int>();
 
             // Create material for each terrain type
-            Material mat = new Material(Shader.Find("Unlit/Color"));
+            Material mat = new(Shader.Find("Unlit/Color"));
             if (mat == null)
             {
                 Debug.LogError("Could not find shader 'Unlit/Color'");
@@ -733,6 +734,8 @@ public class GeodesicSphere : MonoBehaviour
 
     private void AssignTileProprieties(Tile tile)
     {
+        GaussianRandom gaussRandom = new();
+
         if (tile.terrainType is TerrainType.Water)
         {
             return;
@@ -740,7 +743,7 @@ public class GeodesicSphere : MonoBehaviour
 
         if (tile.terrainType is TerrainType.Beach)
         {
-            tile.SeaInfrastructure.MaxLevel = Random.Range(3, 10);
+            tile.SeaInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(1, 10, 3, 0.2);
             tile.SeaInfrastructure.Level = Random.Range(0, tile.SeaInfrastructure.MaxLevel);
         }
         else
@@ -749,23 +752,29 @@ public class GeodesicSphere : MonoBehaviour
             tile.SeaInfrastructure.Level = 0;
         }
 
-        tile.RoadInfrastructure.MaxLevel = Random.Range(1, 10);
+        tile.RoadInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(2, 10, 5, 0.2);
         tile.RoadInfrastructure.Level = Random.Range(1, tile.RoadInfrastructure.MaxLevel);
 
-        tile.RailInfrastructure.MaxLevel = Random.Range(1, 10);
+        tile.RailInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(1, 10, 5, 0.2);
         tile.RailInfrastructure.Level = Random.Range(0, tile.RailInfrastructure.MaxLevel);
 
-        tile.AirInfrastructure.MaxLevel = Random.Range(1, 10);
-        tile.AirInfrastructure.Level = Random.Range(0, tile.AirInfrastructure.MaxLevel);
+        tile.AirInfrastructure.MaxLevel = gaussRandom.NextGaussianRange(0, 10, 2, 0.2);
+        tile.RoadInfrastructure.Level = Random.Range(1, tile.AirInfrastructure.MaxLevel);
 
         if (tile.terrainType is TerrainType.City)
         {
-            tile.population = Random.Range(10000, 1000000);
+            tile.population = gaussRandom.NextGaussianRange(10000, 10000000, 100000, 0.35);
+        }
+        else if (tile.terrainType is TerrainType.Plains or TerrainType.Beach)
+        {
+            tile.population = gaussRandom.NextGaussianRange(1000, 100000, 5000, 0.35);
         }
         else
         {
-            tile.population = Random.Range(1000, 100000);
+            tile.population = gaussRandom.NextGaussianRange(500, 5000, 1000, 0.35);
         }
+
+        Population += tile.population;
     }
 
     public Color GetTerrainColor(TerrainType type)

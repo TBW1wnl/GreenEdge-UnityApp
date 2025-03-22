@@ -14,6 +14,10 @@ public class UIManager : MonoBehaviour
     public UIDocument uiDocument;
     private Button terrainButton;
     private Button countryButton;
+
+    private Label Funds;
+    private Label Population;
+
     private GeodesicSphere geodesicSphere;
     private ViewMode currentViewMode = ViewMode.Terrain;
     private Dictionary<int, Color> countryColors = new Dictionary<int, Color>();
@@ -38,6 +42,9 @@ public class UIManager : MonoBehaviour
         // Find buttons by ID
         terrainButton = root.Q<Button>("TerrainButton");
         countryButton = root.Q<Button>("CountryButton");
+
+        Funds = root.Q<Label>("Funds");
+        Population = root.Q<Label>("Population");
 
         // Check if buttons were found
         if (terrainButton == null || countryButton == null)
@@ -75,6 +82,8 @@ public class UIManager : MonoBehaviour
 
         // Store original colors after countries and colors are set up
         CacheOriginalTileColors();
+
+        Population.text = geodesicSphere.Population.ToString();
     }
 
     // Cache original tile colors for later use
