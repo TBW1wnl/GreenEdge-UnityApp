@@ -74,7 +74,7 @@ public class Tile : MonoBehaviour
         }
     }
 
-    private void OpenTilePopup()
+    public void OpenTilePopup()
     {
         GameObject popupPrefab = TileManager.Instance.GetPopupPrefab();
 

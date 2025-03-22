@@ -6,6 +6,7 @@ public class TileManager : MonoBehaviour
 
     private static TileManager _instance;
     public static TileManager Instance => _instance;
+    public int BuildTime = 100;
 
     private void Awake()
     {

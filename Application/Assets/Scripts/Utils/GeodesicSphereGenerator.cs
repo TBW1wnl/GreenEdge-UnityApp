@@ -3,9 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 public class GeodesicSphere : MonoBehaviour
-{
-    public int Population = 0;
-    public enum TerrainType
+{    public enum TerrainType
     {
         Ocean,
         Beach,
@@ -520,6 +518,7 @@ public class GeodesicSphere : MonoBehaviour
         return southernTiles;
     }
 
+    //not used
     void GenerateDeserts()
     {
         int desertRegions = Random.Range(vertices.Count / 200, vertices.Count / 80);
@@ -774,7 +773,7 @@ public class GeodesicSphere : MonoBehaviour
             tile.tileData.Population = gaussRandom.NextGaussianRange(500, 5000, 1000, 0.35);
         }
 
-        Population += tile.tileData.Population;
+        WorldStateManager.Instance.WorldPopulation += tile.tileData.Population;
     }
 
     public Color GetTerrainColor(TerrainType type)

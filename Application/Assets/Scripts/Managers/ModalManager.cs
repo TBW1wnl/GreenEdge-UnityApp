@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
@@ -10,7 +11,6 @@ public class ModalManager : MonoBehaviour
 {
     [Header("displays")]
     [SerializeField] private Button closeButton;
-    [SerializeField] private Button buildButton;
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TextMeshProUGUI populationText;
     [SerializeField] private Image TerrainImage;
@@ -29,6 +29,16 @@ public class ModalManager : MonoBehaviour
     [SerializeField] private Sprite citySprite;
     [SerializeField] private Sprite coldSprite;
 
+    [Header("other")]
+    [SerializeField] private GameObject notOwnedPanel;
+    [SerializeField] private GameObject ownedPanel;
+
+    [Header("notOwnedPanel")]
+    [SerializeField] private Button buildButton;
+
+    [Header("ownedPanel")]
+
+    private Tile Tile;
     Dictionary<TerrainType, Sprite> TerrainSprites = new();
 
     public static bool isModalOpen = false;
@@ -46,11 +56,21 @@ public class ModalManager : MonoBehaviour
             Debug.LogError("Close button not assigned in ModalManager!");
         }
 
+        if (buildButton != null)
+        {
+            buildButton.onClick.AddListener(BuildInTile);
+            Debug.Log("Build button event listener added.");
+        }
+        else
+        {
+            Debug.LogError("Build button not assigned in ModalManager!");
+        }
 
     }
 
     public void Initialize(Tile tile)
     {
+        Tile = tile;
         isModalOpen = true;
 
         if (titleText != null)
@@ -97,6 +117,17 @@ public class ModalManager : MonoBehaviour
         {
             seaInfrastructureText.text = $"Sea: {tile.tileData.SeaInfrastructure.Level}/{tile.tileData.SeaInfrastructure.MaxLevel}";
         }
+
+        if (tile.tileData.IsBuild)
+        {
+            notOwnedPanel.SetActive(false);
+            ownedPanel.SetActive(true);
+        }
+        else
+        {
+            ownedPanel.SetActive(false);
+            notOwnedPanel.SetActive(true);
+        }
     }
 
     private void ClosePopup()
@@ -106,4 +137,14 @@ public class ModalManager : MonoBehaviour
 
         isModalOpen = false;
     }
+
+    private void BuildInTile()
+    {
+        Tile.tileData.IsBuild = true;
+
+        notOwnedPanel.SetActive(false);
+        ownedPanel.SetActive(true);
+    }
+
+
 }

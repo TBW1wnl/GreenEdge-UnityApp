@@ -10,6 +10,7 @@ namespace Entity
         public int Price { get; set; } = 0;
 
         public string TileName { get; set; }
+        public bool IsBuild { get; set; } = false;
 
         public GeodesicSphere.TerrainType TerrainType { get; set; }
         public Infrastructure RoadInfrastructure { get; set; } = new Infrastructure();

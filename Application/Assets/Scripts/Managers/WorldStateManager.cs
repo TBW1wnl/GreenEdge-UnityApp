@@ -3,6 +3,7 @@ using UnityEngine;
 public class WorldStateManager : MonoBehaviour
 {
     public static WorldStateManager Instance { get; private set; }
+    public int Funds { get; internal set; } = 5000000;
 
     [Range(0, 100)]
     public int GlobalWarming { get; internal set; } = 0;
@@ -21,16 +22,6 @@ public class WorldStateManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    public void ComputeWorldPopulation()
-    {
-        WorldPopulation = 0;
-        foreach (Tile tile in FindObjectsByType<Tile>(FindObjectsSortMode.None))
-        {
-            WorldPopulation += tile.tileData.Population;
-        }
-        Debug.Log($"Population mondiale : {WorldPopulation}");
     }
 
     public void IncreaseTension(int amount)
