@@ -8,11 +8,11 @@
         <engine:VisualElement name="ButtonBar" id="ButtonBar" style="flex-grow: 1;" />
         <engine:VisualElement name="TimeSettings" id="TimeSettings" style="flex-grow: 1;" />
     </engine:VisualElement>
-    <engine:VisualElement name="HelperButtons" id="HelperButtons" style="background-image: url(&quot;project://database/Assets/UI/Game/TopBar/360_F_276667553_jcLgdZz6QtRuTj3SfOcTzJ3I40YqIEUs.jpg?fileID=2800000&amp;guid=77c43c6630be0f241a335c10155d3985&amp;type=3#360_F_276667553_jcLgdZz6QtRuTj3SfOcTzJ3I40YqIEUs&quot;); -unity-background-image-tint-color: rgb(169, 169, 169); height: 132px;">
+    <engine:VisualElement name="HelperButtons" id="HelperButtons" style="background-image: url(&quot;project://database/Assets/UI/Game/TopBar/360_F_276667553_jcLgdZz6QtRuTj3SfOcTzJ3I40YqIEUs.jpg?fileID=2800000&amp;guid=77c43c6630be0f241a335c10155d3985&amp;type=3#360_F_276667553_jcLgdZz6QtRuTj3SfOcTzJ3I40YqIEUs&quot;); -unity-background-image-tint-color: rgb(169, 169, 169); height: 132px; width: 145px;">
         <engine:VisualElement name="container" style="flex-grow: 1;">
             <engine:Button text="TerrainButton" name="TerrainButton" />
             <engine:Button text="CountryButton" name="CountryButton" />
-            <engine:Toggle label="Ownedtoggle&#10;" name="OwnedToggle" />
+            <engine:Button text="OwnedButton" name="OwnedButton" />
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

@@ -18,7 +18,7 @@ public class Tile : MonoBehaviour
     public TileEntity tileData = new();
 
     private Camera mainCamera;
-    private Renderer tileRenderer;
+    public Renderer tileRenderer;
     private Color baseColor;
     private Color hoverColor;
     private bool isHovered = false;

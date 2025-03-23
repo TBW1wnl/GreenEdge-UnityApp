@@ -14,18 +14,18 @@ public class UIManager : MonoBehaviour
     public UIDocument uiDocument;
     private Button terrainButton { get; set; }
     private Button countryButton { get; set; }
-    private Toggle ownedButton { get; set; }
+    private Button ownedButton { get; set; }
 
     private Label Funds;
     private Label Population;
 
     private GeodesicSphere geodesicSphere;
-    private ViewMode currentViewMode = ViewMode.Terrain;
     private Dictionary<int, Color> countryColors = new Dictionary<int, Color>();
     private Dictionary<Tile, Color> originalTileColors = new Dictionary<Tile, Color>();
 
     // Make this static so Tile.cs can access the current view mode
     public static ViewMode CurrentViewMode { get; private set; } = ViewMode.Terrain;
+    public static bool IsBuildMode { get; private set; } = false;
 
     void Start()
     {
@@ -43,7 +43,7 @@ public class UIManager : MonoBehaviour
         // Find buttons by ID
         terrainButton = root.Q<Button>("TerrainButton");
         countryButton = root.Q<Button>("CountryButton");
-        ownedButton = root.Q<Toggle>("OwnedButton");
+        ownedButton = root.Q<Button>("OwnedButton");
 
         Funds = root.Q<Label>("Funds");
         Population = root.Q<Label>("Population");
@@ -58,11 +58,7 @@ public class UIManager : MonoBehaviour
         // Add click events
         terrainButton.clicked += () => ChangeViewMode(ViewMode.Terrain);
         countryButton.clicked += () => ChangeViewMode(ViewMode.Country);
-
-        if (ownedButton.value)
-        {
-            
-        }
+        ownedButton.clicked += () => ProcessOwnedCities();
 
 
         // Ensure AssignCountries() has been called before generating colors
@@ -74,15 +70,45 @@ public class UIManager : MonoBehaviour
         Debug.Log("UI Toolkit buttons found and events assigned!");
     }
 
+    private void ProcessOwnedCities()
+    {
+        if (IsBuildMode)
+        {
+            HideOwnedCity();
+        }
+        else
+        {
+            ShowOwnedCity();
+        }
+    }
+
     private void ShowOwnedCity()
     {
+        Tile[] tiles = Object.FindObjectsByType<Tile>(FindObjectsSortMode.None);
+        foreach (Tile tile in tiles)
+        {
+            if (tile.tileData.IsBuild)
+            {
+                Renderer renderer = tile.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    // Store the current color before changing it, so we can reset later
+                    originalTileColors[tile] = renderer.material.color;
 
+                    // Set the new color to red
+                    tile.SetBaseColor(Color.red);
+                    renderer.material.color = Color.red;
+                }
+            }
+        }
     }
+
 
     private void HideOwnedCity()
     {
-
+        ChangeViewMode(CurrentViewMode);
     }
+
 
     // Wait until countries are assigned
     private IEnumerator WaitForCountries()
@@ -124,11 +150,10 @@ public class UIManager : MonoBehaviour
 
     void ChangeViewMode(ViewMode mode)
     {
-        if (currentViewMode == mode) return;
+        //if (CurrentViewMode == mode) return;
 
         Debug.Log($"View mode changed: {mode}");
-        currentViewMode = mode;
-        CurrentViewMode = mode; // Update static property too
+        CurrentViewMode = mode;
 
         Tile[] tiles = Object.FindObjectsByType<Tile>(FindObjectsSortMode.None);
         Debug.Log($"Found {tiles.Length} tiles to update");
