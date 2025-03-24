@@ -20,7 +20,7 @@ public class GeodesicSphere : MonoBehaviour
     [SerializeField] private float radius = 5f;
 
     private Dictionary<int, List<int>> countries = new Dictionary<int, List<int>>();
-    private Dictionary<int, int> tileToCountry = new Dictionary<int, int>();
+    public Dictionary<int, int> tileToCountry = new Dictionary<int, int>();
     private Dictionary<TerrainType, Material> terrainMaterials = new Dictionary<TerrainType, Material>();
     private Dictionary<TerrainType, List<int>> terrainTriangles = new Dictionary<TerrainType, List<int>>();
     private Dictionary<TerrainType, Color> terrainColors = new Dictionary<TerrainType, Color>
@@ -36,9 +36,9 @@ public class GeodesicSphere : MonoBehaviour
         { TerrainType.Cold, Color.white }                        // White
     };
 
-    private List<Vector3> vertices;
+    public List<Vector3> vertices;
     private List<int> triangles;
-    private Dictionary<int, TerrainType> vertexTerrainMap;
+    public Dictionary<int, TerrainType> vertexTerrainMap;
 
     void Start()
     {
@@ -62,6 +62,12 @@ public class GeodesicSphere : MonoBehaviour
         AssignBiomes();
         AssignCountries();
         CreateSubmeshes();
+
+        SphereExporter exporter = new();
+
+        exporter.sphere = this;
+
+        Debug.Log(exporter.ExportToJson());
     }
 
     void GenerateSphere()

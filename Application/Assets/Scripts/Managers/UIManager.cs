@@ -16,6 +16,14 @@ public class UIManager : MonoBehaviour
     private Button countryButton { get; set; }
     private Button ownedButton { get; set; }
 
+    private Button pause { get; set; }
+    private Button speed0 { get; set; }
+    private Button speed1 { get; set; }
+    private Button speed2 { get; set; }
+
+
+    private Button Menu { get; set; }
+
     private Label Funds;
     private Label Population;
 
@@ -48,6 +56,13 @@ public class UIManager : MonoBehaviour
         Funds = root.Q<Label>("Funds");
         Population = root.Q<Label>("Population");
 
+        pause = root.Q<Button>("pause");
+        speed0 = root.Q<Button>("speed0");
+        speed1 = root.Q<Button>("speed1");
+        speed2 = root.Q<Button>("speed2");
+
+        Menu = root.Q<Button>("Menu");
+
         // Check if buttons were found
         if (terrainButton is null || countryButton is null || ownedButton is null)
         {
@@ -60,6 +75,13 @@ public class UIManager : MonoBehaviour
         countryButton.clicked += () => ChangeViewMode(ViewMode.Country);
         ownedButton.clicked += () => ProcessOwnedCities();
 
+        pause.clicked += () => GameTimeManager.Instance.SetTimeSpeed(0);
+        speed0.clicked += () => GameTimeManager.Instance.SetTimeSpeed(1);
+        speed1.clicked += () => GameTimeManager.Instance.SetTimeSpeed(2);
+        speed2.clicked += () => GameTimeManager.Instance.SetTimeSpeed(3);
+
+        Menu.clicked += () => GameTimeManager.Instance.SetTimeSpeed(0);
+        Menu.clicked += () => GameTimeManager.Instance.SetTimeSpeed(0);
 
         // Ensure AssignCountries() has been called before generating colors
         StartCoroutine(WaitForCountries());
