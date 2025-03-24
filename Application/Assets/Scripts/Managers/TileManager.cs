@@ -36,4 +36,16 @@ public class TileManager : MonoBehaviour
             Debug.LogWarning("No ModalManager found to close.");
         }
     }
+
+    public void CloseCurrentEvent()
+    {
+        if (FindAnyObjectByType<EventsManager>() != null)
+        {
+            Destroy(FindAnyObjectByType<EventsManager>().gameObject);
+        }
+        else
+        {
+            Debug.LogWarning("No EventsManager found to close.");
+        }
+    }
 }

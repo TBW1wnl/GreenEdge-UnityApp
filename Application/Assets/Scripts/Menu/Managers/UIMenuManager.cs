@@ -3,10 +3,12 @@ using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
 
 namespace SlimUI.ModernMenu{
 	public class UIMenuManager : MonoBehaviour {
-		private Animator CameraObject;
+		private string apiUrl = "http://localhost:8000/api/";
+        private Animator CameraObject;
 
 		// campaign button sub menu
         [Header("MENUS")]
@@ -20,8 +22,22 @@ namespace SlimUI.ModernMenu{
         public GameObject exitMenu;
         [Tooltip("Optional 4th Menu")]
         public GameObject extrasMenu;
-        [Header("NEW GAME MENU")]
-        public GameObject ScenarioCanvas;
+
+
+        [Header("Login")]
+        [Tooltip("email")]
+        public TMP_InputField Email;
+        [Tooltip("password")]
+        public TMP_InputField Password;
+        [Tooltip("validate")]
+        public Button Validate;
+        [Tooltip("register")]
+        public Button Register;
+        [Tooltip("LoginPanel")]
+        public GameObject loginPanel;
+        [Tooltip("AfterLoginPanel")]
+        public GameObject afterLoginPanel;
+
 
         public enum Theme {custom1, custom2, custom3};
         [Header("THEME SETTINGS")]
@@ -85,7 +101,9 @@ namespace SlimUI.ModernMenu{
 		void Start(){
 			CameraObject = transform.GetComponent<Animator>();
 
-			playMenu.SetActive(false);
+			loginPanel.SetActive(true);
+            afterLoginPanel.SetActive(false);
+            playMenu.SetActive(false);
 			exitMenu.SetActive(false);
 			if(extrasMenu) extrasMenu.SetActive(false);
 			firstMenu.SetActive(true);
@@ -93,19 +111,6 @@ namespace SlimUI.ModernMenu{
 
 			SetThemeColors();
 		}
-
-		/// <summary>
-		/// test pour voir si ok
-		/// </summary>
-        public void ShowNewGameCanvas()
-        {
-            mainMenu.SetActive(false);
-            if (ScenarioCanvas != null)
-            {
-                ScenarioCanvas.SetActive(true);
-            }
-        }
-
 
         void SetThemeColors()
 		{
@@ -132,7 +137,56 @@ namespace SlimUI.ModernMenu{
 			}
 		}
 
-		public void PlayCampaign(){
+        public void ValidateLogin()
+        {
+            StartCoroutine(LoginCoroutine());
+        }
+
+        IEnumerator LoginCoroutine()
+        {
+            string jsonBody = "{\"email\":\"" + Email.text + "\",\"password\":\"" + Password.text + "\"}";
+            byte[] jsonToSend = System.Text.Encoding.UTF8.GetBytes(jsonBody);
+
+            using (UnityWebRequest request = new UnityWebRequest(apiUrl + "login", "POST"))
+            {
+                request.uploadHandler = new UploadHandlerRaw(jsonToSend);
+                request.downloadHandler = new DownloadHandlerBuffer();
+                request.SetRequestHeader("Content-Type", "application/json");
+
+                yield return request.SendWebRequest();
+
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    Debug.Log("Login Success: " + request.downloadHandler.text);
+
+                    string jsonResponse = request.downloadHandler.text;
+                    TokenResponse tokenData = JsonUtility.FromJson<TokenResponse>(jsonResponse);
+
+                    PlayerPrefs.SetString("auth_token", tokenData.token);
+                    PlayerPrefs.Save();
+
+                    loginPanel.SetActive(false);
+                    afterLoginPanel.SetActive(true);
+                }
+                else
+                {
+                    Debug.LogError("Login Failed: " + request.error);
+                }
+            }
+        }
+
+        [System.Serializable]
+        private class TokenResponse
+        {
+            public string token;
+        }
+
+        public void RegisterLogin()
+        {
+            Application.OpenURL("http://google.com");
+        }
+
+        public void PlayCampaign(){
 			exitMenu.SetActive(false);
 			if(extrasMenu) extrasMenu.SetActive(false);
 			playMenu.SetActive(true);
@@ -153,20 +207,16 @@ namespace SlimUI.ModernMenu{
 		}
 
 		public void LoadScene(string scene){
-			if(scene != ""){
-				StartCoroutine(LoadAsynchronously(scene));
+			Debug.Log("Loading Scene: " + scene);
+            if (scene != ""){
+				Debug.Log("Loading Scene: " + scene);
+                StartCoroutine(LoadAsynchronously(scene));
 			}
 		}
 
 		public void  DisablePlayCampaign(){
 			playMenu.SetActive(false);
 		}
-
-        public void Position3()
-        {
-            DisablePlayCampaign();
-            CameraObject.SetFloat("Animate", 2);
-        }
 
         public void Position2(){
 			DisablePlayCampaign();
@@ -282,30 +332,39 @@ namespace SlimUI.ModernMenu{
 			#endif
 		}
 
-		// Load Bar synching animation
-		IEnumerator LoadAsynchronously(string sceneName){ // scene name is just the name of the current scene being loaded
-			AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
-			operation.allowSceneActivation = false;
-			mainCanvas.SetActive(false);
-			loadingMenu.SetActive(true);
+        // Load Bar synching animation
+        IEnumerator LoadAsynchronously(string sceneName)
+        {
+            AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
+            operation.allowSceneActivation = false;
 
-			while (!operation.isDone){
-				float progress = Mathf.Clamp01(operation.progress / .95f);
-				loadingBar.value = progress;
+            mainCanvas.SetActive(false);
+            loadingMenu.SetActive(true);
+            while (!operation.isDone)
+            {
+                float progress = Mathf.Clamp01(operation.progress / 0.9f);
+                loadingBar.value = progress;
 
-				if (operation.progress >= 0.9f && waitForInput){
-					loadPromptText.text = "Press " + userPromptKey.ToString().ToUpper() + " to continue";
-					loadingBar.value = 1;
+                if (operation.progress >= 0.9f)
+                {
+                    if (waitForInput)
+                    {
+                        loadPromptText.text = "Press " + userPromptKey.ToString().ToUpper() + " to continue";
+                        loadingBar.value = 1;
 
-					if (Input.GetKeyDown(userPromptKey)){
-						operation.allowSceneActivation = true;
-					}
-                }else if(operation.progress >= 0.9f && !waitForInput){
-					operation.allowSceneActivation = true;
-				}
+                        if (Input.anyKeyDown) // Detect any key press
+                        {
+                            operation.allowSceneActivation = true;
+                        }
+                    }
+                    else
+                    {
+                        operation.allowSceneActivation = true;
+                    }
+                }
 
-				yield return null;
-			}
-		}
-	}
+                yield return null;
+            }
+        }
+    }
 }
