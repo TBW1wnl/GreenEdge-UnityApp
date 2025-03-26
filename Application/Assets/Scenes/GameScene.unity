@@ -442,7 +442,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -498,6 +498,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   subdivisions: 5
   radius: 5
+  vertices: []
 --- !u!4 &762314295
 Transform:
   m_ObjectHideFlags: 0
@@ -1104,7 +1105,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1890934049}
-  - component: {fileID: 1890934048}
+  - component: {fileID: 1890934050}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1112,18 +1113,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1890934048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1890934047}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aecbda19449d6b4489525821f22e382, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1890934049
 Transform:
   m_ObjectHideFlags: 0
@@ -1139,6 +1128,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1890934050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1890934047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aecbda19449d6b4489525821f22e382, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupPrefab: {fileID: 5753437932055224079, guid: 7a7d25c4d680daf469365aae1dca7ae3, type: 3}
 --- !u!1001 &6291331353612128219
 PrefabInstance:
   m_ObjectHideFlags: 0

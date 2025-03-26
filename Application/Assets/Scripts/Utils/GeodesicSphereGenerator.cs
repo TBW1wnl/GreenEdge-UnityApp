@@ -67,7 +67,7 @@ public class GeodesicSphere : MonoBehaviour
 
         exporter.sphere = this;
 
-        Debug.Log(exporter.ExportToJson());
+        SaveGameManager.Save(exporter.ExportToJson());
     }
 
     void GenerateSphere()

@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    private static TileManager _instance;
+    public static TileManager Instance => _instance;
 
-    // Update is called once per frame
-    void Update()
+    [SerializeField] private GameObject popupPrefab;
+    public void CloseCurrentPopup()
     {
-        
+        if (FindAnyObjectByType<SaveGameManager>() != null)
+        {
+            Destroy(FindAnyObjectByType<SaveGameManager>().gameObject);
+        }
     }
 }
