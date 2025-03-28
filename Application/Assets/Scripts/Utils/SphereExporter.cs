@@ -47,21 +47,22 @@ public class SphereExporter : MonoBehaviour
     }
 }
 
-
-//{
-//    "tiles": [
-//      {
-//        "id": 0,
-//      "position": { "x": 1.23, "y": 4.56, "z": 7.89 },
-//      "terrainType": "Plains",
-//      "countryId": 3,
-//      "infrastructure": {
-//            "sea": { "level": 2, "maxLevel": 5 },
-//        "road": { "level": 4, "maxLevel": 8 },
-//        "rail": { "level": 1, "maxLevel": 6 },
-//        "air": { "level": 0, "maxLevel": 4 }
-//        },
-//      "population": 5000
-//      }
-//  ]
-//}
+/*
+{
+    "tiles": [
+      {
+        "id": 0,
+      "position": { "x": 1.23, "y": 4.56, "z": 7.89 },
+      "terrainType": "Plains",
+      "countryId": 3,
+      "infrastructure": {
+            "sea": { "level": 2, "maxLevel": 5 },
+        "road": { "level": 4, "maxLevel": 8 },
+        "rail": { "level": 1, "maxLevel": 6 },
+        "air": { "level": 0, "maxLevel": 4 }
+        },
+      "population": 5000
+      }
+  ]
+}
+*/

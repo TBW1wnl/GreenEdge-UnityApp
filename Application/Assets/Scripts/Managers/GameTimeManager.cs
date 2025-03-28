@@ -58,7 +58,11 @@ public class GameTimeManager : MonoBehaviour
 
     public void TriggerMounthly()
     {
-
+        int chance = UnityEngine.Random.Range(0, 10);
+        if (chance == 1)
+        {
+            
+        }
     }
 
     public void TriggerYearly()
