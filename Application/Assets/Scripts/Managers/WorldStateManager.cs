@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class WorldStateManager : MonoBehaviour
@@ -8,6 +9,7 @@ public class WorldStateManager : MonoBehaviour
     [Range(0, 100)]
     public int GlobalWarming { get; internal set; } = 0;
     public int WorldPopulation { get; internal set; } = 0;
+    public List<Tile> Tiles { get; } = new();
 
     private WorldStateManager() { }
 

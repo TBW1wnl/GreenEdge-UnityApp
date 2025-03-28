@@ -176,7 +176,7 @@ namespace SlimUI.ModernMenu{
         }
 
         [System.Serializable]
-        private class TokenResponse
+        public class TokenResponse
         {
             public string token;
         }

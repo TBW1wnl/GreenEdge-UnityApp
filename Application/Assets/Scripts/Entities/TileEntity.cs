@@ -4,6 +4,7 @@ namespace Entity
 {
     public class TileEntity
     {
+        public int id;
         public int CountryId { get; set; }
         public string CountryName { get; set; }
         public int Population { get; set; } = 0;

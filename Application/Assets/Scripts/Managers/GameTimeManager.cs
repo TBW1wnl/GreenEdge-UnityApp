@@ -1,5 +1,9 @@
 using UnityEngine;
 using System;
+using UnityEngine.Networking;
+using System.Collections;
+using SlimUI.ModernMenu;
+using System.Linq;
 
 public class GameTimeManager : MonoBehaviour
 {
@@ -8,6 +12,11 @@ public class GameTimeManager : MonoBehaviour
     public int day = 1;
     public int month = 1;
     public int year = 1;
+    private string apiUrl = "http://localhost:8000/api/";
+
+    [SerializeField] public GameObject EventPrefab;
+    [SerializeField] public GameObject EventContainer;
+
 
     public float timeMultiplier = 3f; // Default to Speed 1 (3 seconds per day)
 
@@ -62,6 +71,45 @@ public class GameTimeManager : MonoBehaviour
         if (chance == 1)
         {
             
+        }
+    }
+
+
+    public void GetEvent()
+    {
+        StartCoroutine(GetEventCoroutine());
+    }
+
+    IEnumerator GetEventCoroutine()
+    {
+        System.Collections.Generic.IEnumerable<Tile> buildedTiles = WorldStateManager.Instance.Tiles.Where(t => t.tileData.IsBuild);
+        int buildedTilesCount = buildedTiles.Count();
+        Tile tile = buildedTiles.ToList()[UnityEngine.Random.Range(0, buildedTilesCount-1)];
+        string jsonBody = $"\"tile\": {tile.tileData.id}";
+        byte[] jsonToSend = System.Text.Encoding.UTF8.GetBytes(jsonBody);
+
+        using (UnityWebRequest request = new(apiUrl + "get_random_event", "GET"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(jsonToSend);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Login Success: " + request.downloadHandler.text);
+
+                string jsonResponse = request.downloadHandler.text;
+                UIMenuManager.TokenResponse tokenData = JsonUtility.FromJson<UIMenuManager.TokenResponse>(jsonResponse);
+
+                PlayerPrefs.SetString("auth_token", tokenData.token);
+                PlayerPrefs.Save();
+            }
+            else
+            {
+                Debug.LogError("Login Failed: " + request.error);
+            }
         }
     }
 
