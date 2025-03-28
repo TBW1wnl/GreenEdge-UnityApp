@@ -98,7 +98,7 @@ public class GameTimeManager : MonoBehaviour
 
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log("Login Success: " + request.downloadHandler.text);
+                Debug.Log("Success: " + request.downloadHandler.text);
 
                 string jsonResponse = request.downloadHandler.text;
                 UIMenuManager.TokenResponse tokenData = JsonUtility.FromJson<UIMenuManager.TokenResponse>(jsonResponse);
@@ -108,7 +108,7 @@ public class GameTimeManager : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Login Failed: " + request.error);
+                Debug.LogError("Failed: " + request.error);
             }
         }
     }
